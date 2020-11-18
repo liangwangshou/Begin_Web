@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0px;
+            padding: 0px;
+        }
+    </style>
+</head>
+
+<body>
+    <input type="text" value="" id="input1">
+    <div id="div1">
+
+    </div>
+</body>
+
+<script>
+    var inputadd = document.querySelector('#input1');
+    inputadd.addEventListener('input', function () {
+        // 定于对象
+        function getXhr() {
+            var xhr = null;
+            if (window.XMLHttpRequest) {
+                xhr = new XMLHttpRequest();
+            } else {
+                xhr = new ActiveXObject("Micrsoft.XMlHttp");
+            }
+            return xhr;
+        }
+        // 函数定义
+        function getAjax(url, fn) {
+            var xhr = getXhr();
+            // 请求
+            xhr.open("get", url, true);
+            xhr.send();
+            // 响应
+            xhr.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    var data = eval("(" + xhr.responseText + ")");
+                    fn(data);
+                }
+            }
+
+        }
+        // 函数调用
+        var keys = inputadd.value;
+        getAjax("http://m.ctrip.com/restapi/h5api/globalsearch/search?userid=M2208559994&source=mobileweb&action=mobileweb&keyword=" + keys, function (data) {
+            var div = document.querySelector("#div1");
+            var divhtml = "";
+            for (var i = 0; i < data.data.length; i++) {
+                divhtml += "<span><a href='" + data.data[i].url + "'>" + data.data[i].word + "</a></span><br>";
+            }
+            div.innerHTML = divhtml;
+        });
+    })
+
+</script>
+
+
+
+</html>
